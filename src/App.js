@@ -3,11 +3,6 @@ import React, { useState, useEffect } from 'react'
 
 
 const Word = function ({ word, status, cycleState }) {
-  // const cycleState = function(event) {
-  //   const word = event.target.textContent;
-  //   console.log(word)
-  // }
-
   return <span onClick={cycleState} className={status + ' word'}>{word}</span>
 };
 
@@ -80,12 +75,16 @@ function App() {
       } else if (wordObject.state === 'familiar') {
         wordObject.state = 'learned';
       } else if (wordObject.state === 'learned') {
-        wordObject.state = 'learning';
+        wordObject.state = undefined;
       } else if (wordObject.state === 'learning') {
         wordObject.state = 'familiar';
       }
 
       const updatedWords = [...words.filter(wordObj => wordObj.word !== word), wordObject];
+      setWords(updatedWords)
+    } else {
+      const newWordObj = {word: `${word}`, state: 'learning'}
+      const updatedWords = [...words, newWordObj];
       setWords(updatedWords)
     }
   }
@@ -96,7 +95,6 @@ function App() {
   }
 
   useEffect(getWordsAndText, [])
-  // console.log(words)
   return (
     <>
       {text && <TextBody cycleState={cycleState} text={text} words={words} />}
