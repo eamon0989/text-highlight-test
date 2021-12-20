@@ -7,6 +7,7 @@ const getWordsFromText = async function() {
 }
 
 const getText = async function() {
+  console.log('getText')
   const request = await axios.get('http://localhost:3000/api/texts/1');
   console.log(request)
   return request.data;

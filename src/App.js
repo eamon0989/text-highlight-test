@@ -2,39 +2,54 @@
 import wordsService from './services/words'
 import React, { useState, useEffect } from 'react'
 
+const Word = function({ word }) {
+  return <span>{word}</span>
+}
+
 const Text = function({text}) {
-
-  
-  // const getText = async function() {
-  //   const text = await wordsService.getText();
-  //   setText(text);
-  //   // return text;
-  // }
-
-  // getText();
-  // console.log(text);
+  // console.log(text)
+  // const words = text.split(' ');
+  // console.log('words')
+  // console.log(words)
   return (
     <div>
-      <p>{'Insert text'}</p>
-      {text.title}
-      {text.body}
+      {text}
     </div>
   )
 }
 
-
-
 function App() {
   const [text, setText] = useState([]);
   const [words, setWords] = useState([]);
+  const [phrases, setPhrases] = useState([]);
 
+  // const getPhrases = function() {
+  //   console.log('gettingphrases')
+  //   console.log(phrases)
+  //   words.forEach(word => {
+  //     if (/ /.test(word.word)) {
+  //       // console.log(word)
+  //       console.log(phrases)
+  //       // const updatedPhrases = [...phrases];
+  //       // phrases.push(word);
+  //       // console.log('updatedPhrases')
+  //       // console.log(updatedPhrases)
+  //       setPhrases([...phrases, word])
+  //     }
+  //   })
+
+  //   console.log(phrases)
+  // }
 
   useEffect(() => {
-    wordsService.getText().then(text => setText(text))
+    wordsService.getText().then(text => setText(text.body))
     wordsService.getWordsFromText().then(words => setWords(words))
   }, [])
 
-  console.log(words)
+  // useEffect(getPhrases, [words])
+  // console.log(phrases)
+  // console.log(text)
+
   return (
     <>
       <p>{'Insert text here'}</p>
