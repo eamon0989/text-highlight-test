@@ -66,7 +66,7 @@ function App() {
 
   const cycleState = function(event) {
     const word = event.target.textContent;
-    const wordObj = words.filter(wordObj => wordObj.word === word);
+    const wordObj = words.filter(wordObj => wordObj.word.toLowerCase() === word.toLowerCase());
     if (wordObj.length > 0) {
       const wordObject = wordObj[0];
 
@@ -80,7 +80,7 @@ function App() {
         wordObject.state = 'familiar';
       }
 
-      const updatedWords = [...words.filter(wordObj => wordObj.word !== word), wordObject];
+      const updatedWords = [...words.filter(wordObj => wordObj.word.toLowerCase() !== word.toLowerCase()), wordObject];
       setWords(updatedWords)
     } else {
       const newWordObj = {word: `${word}`, state: 'learning'}
