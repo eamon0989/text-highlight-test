@@ -65,7 +65,7 @@ const IndividualText = function({ text, openText }) {
   return (
     <li onClick={(event) => openText(event, text)}>
       <h2>{text.title}</h2>
-      <p>{text.body}</p>
+      <p>{text.body.slice(0, 300)}</p>
     </li>
   )
 }
