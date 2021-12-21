@@ -1,8 +1,8 @@
 import axios from 'axios';
 const baseUrl = 'http://localhost:3000/api/words'
 
-const getWordsFromText = async function() {
-  // const request = await axios.get(`${baseUrl}/text/1/user/1`);
+const getWordsFromText = async function(id) {
+  // const request = await axios.get(`${baseUrl}/text/${id}/user/1`);
   // return request.data;
 
   return [

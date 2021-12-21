@@ -1,6 +1,6 @@
 import wordsService from './services/words'
 import React, { useState, useEffect } from 'react'
-
+import textsService from './services/userTexts'
 
 const Word = function ({ word, status, cycleState, getSelection }) {
   return <span onMouseUp={getSelection} onClick={cycleState} className={status + ' word'}>{word}</span>
@@ -49,7 +49,20 @@ const Paragraph = function({ paragraph, words, cycleState, getSelection }) {
 
 
 const TextBody = function ({ text, words, cycleState, getSelection }) {
-  const paragraphs = text?.split('\n');
+  const textBody = text.body;
+  const paragraphs = textBody?.split('\n');
+
+  // const getWordsAndText = function() {
+  //   // wordsService.getText().then(text => setText(text.body))
+  //   wordsService.getWordsFromText().then(words => setWords(words))
+  // }
+
+  // useEffect(getWordsAndText, [])
+  // return (
+  //   <>
+  //     {text && <TextBody getSelection={getSelection} cycleState={cycleState} text={text} words={words} />}
+  //   </>
+  // );
 
   return (
     <div>
@@ -60,9 +73,55 @@ const TextBody = function ({ text, words, cycleState, getSelection }) {
   );
 };
 
-function App() {
+const IndividualText = function({ text, openText }) {
+  return (
+    <li onClick={(event) => openText(event, text)}>
+      <h2>{text.title}</h2>
+      <p>{text.body}</p>
+    </li>
+  )
+}
+
+const UserTexts = function({ openText }) {
+  const [texts, setTexts] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const getUserTexts = function() {
+    textsService.getAllUserTexts().then(texts => {
+      setTexts(texts)
+      setIsLoaded(true)
+    })
+  }
+
+  useEffect(getUserTexts, [])
+
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  } else {
+    return (
+      <ul>
+        <div>Loaded</div>
+        {texts.map(text => <IndividualText openText={openText} text={text} />)}
+      </ul>
+    )
+  }
+}
+
+const App = function() {
   const [text, setText] = useState('');
   const [words, setWords] = useState([]);
+  // const [selectedTextId, setSelectedTextId] = useState();
+
+  const openText = function(_event, text) {
+    // setSelectedTextId(text.id);
+    setText(text)
+  }
+
+  const getWordsAndText = function() {
+    wordsService.getWordsFromText(text.id).then(words => setWords(words))
+  }
+
+  useEffect(getWordsAndText, [text])
 
   const cycleState = function(event) {
     const word = event.target.textContent;
@@ -94,6 +153,8 @@ function App() {
     let selectedString = window.getSelection().toString()
     const startNode = window.getSelection().anchorNode
     const endNode = window.getSelection().focusNode
+    console.log(startNode)
+    console.log(endNode)
     const startWord = startNode.textContent
     const endWord = endNode.textContent
 
@@ -101,25 +162,29 @@ function App() {
     const stringArray = selectedString.split(' ');
     stringArray[0] = startWord;
     stringArray[stringArray.length - 1] = endWord;
-    const newPhrase = stringArray.join(' ')
+    const newPhrase = stringArray.join(' ').trim()
 
     // adds the phrase to words with state: learning
     const newWordObj = {word: `${newPhrase}`, state: 'learning'}
+    console.log(newWordObj)
     const updatedWords = [...words, newWordObj];
     setWords(updatedWords)
   }
 
-  const getWordsAndText = function() {
-    wordsService.getText().then(text => setText(text.body))
-    wordsService.getWordsFromText().then(words => setWords(words))
+  if (text) {
+    return (
+      <>
+        {<TextBody getSelection={getSelection} cycleState={cycleState} text={text} words={words} />}
+      </>
+    );
+  } else {
+    return (
+      <>
+        {<UserTexts openText={openText} />}
+      </>
+    );
   }
 
-  useEffect(getWordsAndText, [])
-  return (
-    <>
-      {text && <TextBody getSelection={getSelection} cycleState={cycleState} text={text} words={words} />}
-    </>
-  );
 
 }
 
