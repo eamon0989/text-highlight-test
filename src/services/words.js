@@ -13,13 +13,6 @@ const getWordsFromText = async function(id) {
   ]
 }
 
-
-const getText = async function() {
-  const request = await axios.get('http://localhost:3000/api/texts/1');
-  return request.data;
-}
-
 export default {
   getWordsFromText,
-  getText
 }

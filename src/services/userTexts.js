@@ -7,6 +7,12 @@ const getAllUserTexts = async function() {
   return request.data;
 }
 
+const getTextById = async function() {
+  const request = await axios.get('http://localhost:3000/api/texts/1');
+  return request.data;
+}
+
 export default {
   getAllUserTexts,
+  getTextById
 }
