@@ -89,7 +89,7 @@ const UserTexts = function({ openText }) {
     return (
       <ul>
         <div>Loaded</div>
-        {texts.map(text => <IndividualText openText={openText} text={text} />)}
+        {texts.map(text => <IndividualText key={text.id} openText={openText} text={text} />)}
       </ul>
     )
   }
