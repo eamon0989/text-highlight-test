@@ -2,25 +2,25 @@ import wordsService from './services/words'
 import React, { useState, useEffect } from 'react'
 
 
-const Word = function ({ word, status, cycleState }) {
-  return <span onClick={cycleState} className={status + ' word'}>{word}</span>
+const Word = function ({ word, status, cycleState, getSelection }) {
+  return <span onMouseUp={getSelection} onClick={cycleState} className={status + ' word'}>{word}</span>
 };
 
 
-const Phrase = function ({ phrase, status, markedWords, cycleState }) {
+const Phrase = function ({ phrase, status, markedWords, cycleState, getSelection }) {
   const parts = phrase.split(' ');
 
   return (
     <span onClick={cycleState} className={status + ' phrase'}>
       {
-        parts.map((word, index, array) => <><Word key={word + index} word={word} status={markedWords[word.toLowerCase()]} />{index === array.length - 1 ? '' : ' '}</>)
+        parts.map((word, index, array) => <><Word getSelection={getSelection} key={word + index} word={word} status={markedWords[word.toLowerCase()]} />{index === array.length - 1 ? '' : ' '}</>)
       }
     </span>
   )
 };
 
 
-const Paragraph = function({ paragraph, words, cycleState }) {
+const Paragraph = function({ paragraph, words, cycleState, getSelection }) {
   const markedWords = {};
   words.forEach(obj => markedWords[obj.word] = obj.state);
 
@@ -33,13 +33,13 @@ const Paragraph = function({ paragraph, words, cycleState }) {
   const tokenRegExp = new RegExp(`${phraseFinder}|${wordFinder}|${noWordFinder}`, 'gui');  
 
   const tokens = paragraph.match(tokenRegExp);
- 
+
   return (
     <p>
       {
         tokens.map((token, index) => {
-          if (token.match(phraseRegExp)) return <Phrase cycleState={cycleState} key={token + index} phrase={token} markedWords={markedWords} status={markedWords[token.toLowerCase()]} />;
-          if (token.match(wordRegExp)) return <Word cycleState={cycleState} key={token + index} word={token} status={markedWords[token.toLowerCase()]} />;
+          if (token.match(phraseRegExp)) return <Phrase getSelection={getSelection} cycleState={cycleState} key={token + index} phrase={token} markedWords={markedWords} status={markedWords[token.toLowerCase()]} />;
+          if (token.match(wordRegExp)) return <Word getSelection={getSelection} cycleState={cycleState} key={token + index} word={token} status={markedWords[token.toLowerCase()]} />;
           return <span key={token + index}>{token}</span>;
         })
       }
@@ -48,13 +48,13 @@ const Paragraph = function({ paragraph, words, cycleState }) {
 }
 
 
-const TextBody = function ({ text, words, cycleState }) {
+const TextBody = function ({ text, words, cycleState, getSelection }) {
   const paragraphs = text?.split('\n');
 
   return (
     <div>
       {
-        paragraphs.map((paragraph, index) => <Paragraph cycleState={cycleState} key={index} paragraph={paragraph} words={words} />)
+        paragraphs.map((paragraph, index) => <Paragraph getSelection={getSelection} cycleState={cycleState} key={index} paragraph={paragraph} words={words} />)
       }
     </div>
   );
@@ -89,6 +89,26 @@ function App() {
     }
   }
 
+  const getSelection = function(event) {
+    // gets the selection string
+    let selectedString = window.getSelection().toString()
+    const startNode = window.getSelection().anchorNode
+    const endNode = window.getSelection().focusNode
+    const startWord = startNode.textContent
+    const endWord = endNode.textContent
+
+    // ensures the first and last words are whole words
+    const stringArray = selectedString.split(' ');
+    stringArray[0] = startWord;
+    stringArray[stringArray.length - 1] = endWord;
+    const newPhrase = stringArray.join(' ')
+
+    // adds the phrase to words with state: learning
+    const newWordObj = {word: `${newPhrase}`, state: 'learning'}
+    const updatedWords = [...words, newWordObj];
+    setWords(updatedWords)
+  }
+
   const getWordsAndText = function() {
     wordsService.getText().then(text => setText(text.body))
     wordsService.getWordsFromText().then(words => setWords(words))
@@ -97,7 +117,7 @@ function App() {
   useEffect(getWordsAndText, [])
   return (
     <>
-      {text && <TextBody cycleState={cycleState} text={text} words={words} />}
+      {text && <TextBody getSelection={getSelection} cycleState={cycleState} text={text} words={words} />}
     </>
   );
 
