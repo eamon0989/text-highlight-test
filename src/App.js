@@ -110,11 +110,9 @@ const App = function() {
   useEffect(getWordsAndText, [text])
 
   const cycleState = function(event) {
-    console.log('cyclestate')
     const word = event.target.textContent;
-    console.log(word)
     const wordObj = words.filter(wordObj => wordObj.word.toLowerCase() === word.toLowerCase());
-    console.log(wordObj)
+
     if (wordObj.length > 0) {
       const wordObject = wordObj[0];
 
@@ -138,13 +136,13 @@ const App = function() {
   }
 
   const getSelection = function(event) {
-    // todo: make the selection stop at the first full stop.
+    // todo: check interaction between this and cycleState
+    // fix bug where if a user selects backwards, first and last words are swapped
     // gets the selection string
+    console.log(window.getSelection())
     let selectedString = window.getSelection().toString()
     const startNode = window.getSelection().anchorNode
     const endNode = window.getSelection().focusNode
-    console.log(startNode)
-    console.log(endNode)
     const startWord = startNode.textContent
     const endWord = endNode.textContent
 
@@ -153,12 +151,15 @@ const App = function() {
     stringArray[0] = startWord;
     stringArray[stringArray.length - 1] = endWord;
     const newPhrase = stringArray.join(' ').trim().split('.')[0]
+    console.log(newPhrase)
 
     // adds the phrase to words with state: learning
     const newWordObj = {word: `${newPhrase.toLowerCase()}`, state: 'learning'}
-    console.log(newWordObj)
-    const updatedWords = [...words, newWordObj];
-    setWords(updatedWords)
+
+    if (words.filter(wordObj => wordObj.word.toLowerCase() === newWordObj.word.toLowerCase()).length === 0) {
+      const updatedWords = [...words, newWordObj];
+      setWords(updatedWords)
+    }
   }
 
   if (text) {
