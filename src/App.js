@@ -110,8 +110,11 @@ const App = function() {
   useEffect(getWordsAndText, [text])
 
   const cycleState = function(event) {
+    console.log('cyclestate')
     const word = event.target.textContent;
+    console.log(word)
     const wordObj = words.filter(wordObj => wordObj.word.toLowerCase() === word.toLowerCase());
+    console.log(wordObj)
     if (wordObj.length > 0) {
       const wordObject = wordObj[0];
 
@@ -128,7 +131,7 @@ const App = function() {
       const updatedWords = [...words.filter(wordObj => wordObj.word.toLowerCase() !== word.toLowerCase()), wordObject];
       setWords(updatedWords)
     } else {
-      const newWordObj = {word: `${word}`, state: 'learning'}
+      const newWordObj = {word: `${word.toLowerCase()}`, state: 'learning'}
       const updatedWords = [...words, newWordObj];
       setWords(updatedWords)
     }
@@ -152,7 +155,7 @@ const App = function() {
     const newPhrase = stringArray.join(' ').trim().split('.')[0]
 
     // adds the phrase to words with state: learning
-    const newWordObj = {word: `${newPhrase}`, state: 'learning'}
+    const newWordObj = {word: `${newPhrase.toLowerCase()}`, state: 'learning'}
     console.log(newWordObj)
     const updatedWords = [...words, newWordObj];
     setWords(updatedWords)
