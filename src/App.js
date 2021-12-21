@@ -135,6 +135,7 @@ const App = function() {
   }
 
   const getSelection = function(event) {
+    // todo: make the selection stop at the first full stop.
     // gets the selection string
     let selectedString = window.getSelection().toString()
     const startNode = window.getSelection().anchorNode
@@ -148,7 +149,7 @@ const App = function() {
     const stringArray = selectedString.split(' ');
     stringArray[0] = startWord;
     stringArray[stringArray.length - 1] = endWord;
-    const newPhrase = stringArray.join(' ').trim()
+    const newPhrase = stringArray.join(' ').trim().split('.')[0]
 
     // adds the phrase to words with state: learning
     const newWordObj = {word: `${newPhrase}`, state: 'learning'}
