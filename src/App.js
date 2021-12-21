@@ -52,18 +52,6 @@ const TextBody = function ({ text, words, cycleState, getSelection }) {
   const textBody = text.body;
   const paragraphs = textBody?.split('\n');
 
-  // const getWordsAndText = function() {
-  //   // wordsService.getText().then(text => setText(text.body))
-  //   wordsService.getWordsFromText().then(words => setWords(words))
-  // }
-
-  // useEffect(getWordsAndText, [])
-  // return (
-  //   <>
-  //     {text && <TextBody getSelection={getSelection} cycleState={cycleState} text={text} words={words} />}
-  //   </>
-  // );
-
   return (
     <div>
       {
@@ -110,10 +98,8 @@ const UserTexts = function({ openText }) {
 const App = function() {
   const [text, setText] = useState('');
   const [words, setWords] = useState([]);
-  // const [selectedTextId, setSelectedTextId] = useState();
 
   const openText = function(_event, text) {
-    // setSelectedTextId(text.id);
     setText(text)
   }
 
